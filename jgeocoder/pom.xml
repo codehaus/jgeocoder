@@ -47,9 +47,9 @@
     </site>
   </distributionManagement>    
   <scm>
-    <connection>scm:svn:https://jgeocoder.svn.sourceforge.net/svnroot/jgeocoder2/</connection>
-    <developerConnection>scm:svn:https://zl25-drexel@jgeocoder.svn.sourceforge.net/svnroot/jgeocoder/jgeocoder2/</developerConnection>
-    <url>scm:svn:https://jgeocoder.svn.sourceforge.net/svnroot/jgeocoder/jgeocoder2/</url>
+    <connection>scm:svn:https://svn.codehaus.org/jgeocoder/jgeocoder/</connection>
+    <developerConnection>scm:svn:https://zl25drexel@svn.codehaus.org/jgeocoder/jgeocoder/</developerConnection>
+    <url>scm:svn:https://svn.codehaus.org/jgeocoder/jgeocoder/</url>
   </scm>      
   <build>
 	<defaultGoal>package</defaultGoal>
