@@ -1,6 +1,6 @@
 package org.codehaus.jgeocoder.index;
 
-import static org.codehaus.jgeocoder.index.StreetDictDocumentNames.COUNTY;
+import static org.codehaus.jgeocoder.index.StreetDictDocumentNames.*;
 import static org.codehaus.jgeocoder.index.StreetDictDocumentNames.NGRAMS;
 import static org.codehaus.jgeocoder.index.StreetDictDocumentNames.POST;
 import static org.codehaus.jgeocoder.index.StreetDictDocumentNames.PRE;
@@ -51,6 +51,7 @@ class StreetDictIndexBuilder{
 					doc.add(new Field(PRE, values[0], Store.YES, Index.NO));
 				}
 				doc.add(new Field(WORD, values[1], Store.YES, Index.UN_TOKENIZED));
+				doc.add(new Field(WORD, StringUtils.leftPad(String.valueOf(values[1].length()), 2, '0'), Store.NO, Index.UN_TOKENIZED));
 				
 				if(StringUtils.isNotBlank(values[2])){
 					doc.add(new Field(POST, values[2], Store.YES, Index.NO));
