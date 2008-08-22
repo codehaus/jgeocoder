@@ -1,12 +1,8 @@
 package org.codehaus.jgeocoder.index;
 
-import static org.codehaus.jgeocoder.index.StreetDictDocumentNames.*;
+import static org.codehaus.jgeocoder.index.StreetDictDocumentNames.LENGTH;
 import static org.codehaus.jgeocoder.index.StreetDictDocumentNames.NGRAMS;
-import static org.codehaus.jgeocoder.index.StreetDictDocumentNames.POST;
-import static org.codehaus.jgeocoder.index.StreetDictDocumentNames.PRE;
-import static org.codehaus.jgeocoder.index.StreetDictDocumentNames.STATE;
-import static org.codehaus.jgeocoder.index.StreetDictDocumentNames.WORD;
-import static org.codehaus.jgeocoder.index.StreetDictDocumentNames.ZIP;
+import static org.codehaus.jgeocoder.index.StreetDictDocumentNames.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -32,40 +28,25 @@ class StreetDictIndexBuilder{
 	public static void main(String[] args) throws Exception{
 		IndexWriter w = null;
 		BufferedReader r = null;
+		if(true) throw new RuntimeException("dont run");
 		try {
 			w = new IndexWriter("/usr/local/jgeocoder/index/street_dict", new KeywordAnalyzer() );
 			
-		    r = new BufferedReader(new FileReader(Thread.currentThread().getContextClassLoader().getResource("org/codehaus/jgeocoder/index/street_dict.txt").getFile()));
+		    r = new BufferedReader(new FileReader(Thread.currentThread().getContextClassLoader().getResource("org/codehaus/jgeocoder/index/street_dict").getFile()));
 			String line = null;
 			int count = 0;
 			while((line = r.readLine()) != null){
 				if(count++ > 1000){
 					System.out.println(count);
 				}
-				String[] values = (" "+line+" ").split("[|]");
+				String v1 = line.substring(0, 7).trim();
+				String v2 = line.substring(7).trim();
 				Document doc = new Document();
-				if(StringUtils.isBlank(values[1])){
-					continue;
-				}
-				if(StringUtils.isNotBlank(values[0])){
-					doc.add(new Field(PRE, values[0], Store.YES, Index.NO));
-				}
-				doc.add(new Field(WORD, values[1], Store.YES, Index.UN_TOKENIZED));
-				doc.add(new Field(LENGTH, StringUtils.leftPad(String.valueOf(values[1].length()), 2, '0'), Store.NO, Index.UN_TOKENIZED));
-				
-				if(StringUtils.isNotBlank(values[2])){
-					doc.add(new Field(POST, values[2], Store.YES, Index.NO));
-				}
-				if(StringUtils.isNotBlank(values[3])){
-					doc.add(new Field(COUNTY, values[3], Store.YES, Index.NO));
-				}
-				if(StringUtils.isNotBlank(values[4])){
-					doc.add(new Field(STATE, values[4], Store.YES, Index.UN_TOKENIZED));
-				}
-				if(StringUtils.isNotBlank(values[5])){
-					doc.add(new Field(ZIP, values[5], Store.YES, Index.UN_TOKENIZED));
-				}
-				for(String ngram : NGramUtils.nGramTokenize(" "+values[1]+" ", 2, 3)){
+				doc.add(new Field(WORD, v2, Store.YES, Index.NO));
+				doc.add(new Field(FREQ, String.valueOf(v1), Store.YES, Index.NO));
+				doc.add(new Field(LENGTH, StringUtils.leftPad(String.valueOf(v2.length()), 2, '0'), Store.NO, Index.UN_TOKENIZED));
+				String token = " "+v2+" ";
+				for(String ngram : NGramUtils.nGramTokenize(token, 2, 3)){
 					String name = NGRAMS[ngram.length()];
 					doc.add(new Field(name, ngram, Store.NO, Index.UN_TOKENIZED));
 				}

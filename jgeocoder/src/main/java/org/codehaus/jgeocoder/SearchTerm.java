@@ -15,12 +15,27 @@ import org.apache.commons.lang.builder.ToStringStyle;
 public class SearchTerm{
 	
 	public static enum Tag{
-		NUMBER, STREET, CITY, STATE, ZIP
+		NUMBER, STREET, CITY, STATE, ZIP, STOP
 	}
 	
 	public static class TaggedField{
 		private Tag tag;
 		private String value;
+		private float score;
+		
+		public TaggedField(float score, Tag tag, String value) {
+			super();
+			this.score = score;
+			this.tag = tag;
+			this.value = value;
+		}
+		
+		public void setScore(float score) {
+			this.score = score;
+		}
+		public float getScore() {
+			return score;
+		}
 		public Tag getTag() {
 			return tag;
 		}
@@ -56,7 +71,7 @@ public class SearchTerm{
 		return tagFields;
 	}
 	
-	public void addAlternative(TaggedField tagField){
+	public void addTaggedField(TaggedField tagField){
 		tagFields.add(tagField);
 	}
 	

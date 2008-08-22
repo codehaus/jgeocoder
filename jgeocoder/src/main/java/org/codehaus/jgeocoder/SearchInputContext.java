@@ -17,9 +17,6 @@ public class SearchInputContext{
 	
 	private static final Pattern TERM = Pattern.compile("(.+?)(\\W+)?");
 	
-	public static void main(String[] args) {
-		System.out.println(new SearchInputContext("123 main st, phiadelphia pa"));
-	}
 	
 	public SearchInputContext(String input){
 		originalInput = input;
@@ -31,6 +28,10 @@ public class SearchInputContext{
 			searchTerms.add(new SearchTerm(m.group(1), m.group(2)));
 		}
 		
+	}
+	
+	public List<SearchTerm> getSearchTerms() {
+		return searchTerms;
 	}
 	
 	public String getOriginalInput() {
@@ -55,6 +56,6 @@ public class SearchInputContext{
      * @return
      */
     private static String getCleanSttring(String where){
-      return SPACE.matcher(CLEANUP.matcher(where).replaceAll(" ")).replaceAll(" ").trim().toLowerCase();
+      return SPACE.matcher(CLEANUP.matcher(where).replaceAll(" ")).replaceAll(" ").trim().toUpperCase();
     }   
 }
