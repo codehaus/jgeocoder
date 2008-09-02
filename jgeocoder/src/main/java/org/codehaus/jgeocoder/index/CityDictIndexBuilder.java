@@ -38,10 +38,10 @@ class CityDictIndexBuilder{
 					System.out.println(count);
 				}
 				String[] items = line.split("[|]");
-				String v1 = items[1];
+//				String v1 = items[1];
 				String v2 = items[0];
 				Document doc = new Document();
-				doc.add(new Field(ZIPS, v1, Store.YES, Index.NO));
+				doc.add(new Field(WORD, v2, Store.YES, Index.NO));
 				doc.add(new Field(LENGTH, StringUtils.leftPad(String.valueOf(v2.length()), 2, '0'), Store.NO, Index.UN_TOKENIZED));
 				String token = " "+v2+" ";
 				for(String ngram : NGramUtils.nGramTokenize(token, 2, 3)){
