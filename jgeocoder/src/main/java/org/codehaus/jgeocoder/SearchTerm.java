@@ -59,6 +59,10 @@ public class SearchTerm{
 			this.value = value;
 		}
 		@Override
+		public String toString() {
+			return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
+		}
+		@Override
 		public boolean equals(Object obj) {
 			return EqualsBuilder.reflectionEquals(this, obj);
 		}
@@ -104,6 +108,6 @@ public class SearchTerm{
 	
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
 	}
 }
