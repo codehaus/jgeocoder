@@ -21,27 +21,27 @@ import org.codehaus.jgeocoder.NGramUtils;
  * @author liangj01
  *
  */
-class StreetDictIndexBuilder{
+class CityDictIndexBuilder{
 	
 	public static void main(String[] args) throws Exception{
 		IndexWriter w = null;
 		BufferedReader r = null;
-		if(true) throw new RuntimeException("dont run");
+//		if(true) throw new RuntimeException("dont run");
 		try {
-			w = new IndexWriter("/usr/local/jgeocoder/index/street_dict", new KeywordAnalyzer() );
+			w = new IndexWriter("/usr/local/jgeocoder/index/city_dict", new KeywordAnalyzer() );
 			
-		    r = new BufferedReader(new FileReader(Thread.currentThread().getContextClassLoader().getResource("org/codehaus/jgeocoder/index/street_dict").getFile()));
+		    r = new BufferedReader(new FileReader(Thread.currentThread().getContextClassLoader().getResource("org/codehaus/jgeocoder/index/city_dict").getFile()));
 			String line = null;
 			int count = 0;
 			while((line = r.readLine()) != null){
 				if(count++ > 1000){
 					System.out.println(count);
 				}
-				String v1 = line.substring(0, 7).trim();
-				String v2 = line.substring(7).trim();
+				String[] items = line.split("[|]");
+				String v1 = items[1];
+				String v2 = items[0];
 				Document doc = new Document();
-				doc.add(new Field(WORD, v2, Store.YES, Index.NO));
-				doc.add(new Field(FREQ, String.valueOf(v1), Store.YES, Index.NO));
+				doc.add(new Field(ZIPS, v1, Store.YES, Index.NO));
 				doc.add(new Field(LENGTH, StringUtils.leftPad(String.valueOf(v2.length()), 2, '0'), Store.NO, Index.UN_TOKENIZED));
 				String token = " "+v2+" ";
 				for(String ngram : NGramUtils.nGramTokenize(token, 2, 3)){

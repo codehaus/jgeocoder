@@ -2,8 +2,9 @@ package org.codehaus.jgeocoder.index;
 
 
 
-public class StreetDictDocumentNames{
+public class FieldNames{
 	public static final String WORD = "word";
+	public static final String ZIPS = "zips";
 	public static final String FREQ = "freq";
 	public static final String LENGTH = "length";
 	

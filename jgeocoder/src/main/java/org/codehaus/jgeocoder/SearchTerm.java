@@ -22,12 +22,22 @@ public class SearchTerm{
 		private Tag tag;
 		private String value;
 		private float score;
+		private int freq;
 		
-		public TaggedField(float score, Tag tag, String value) {
+		public TaggedField(float score, Tag tag, String value, int freq) {
 			super();
 			this.score = score;
 			this.tag = tag;
 			this.value = value;
+			this.freq = freq;
+		}
+		
+		public int getFreq() {
+			return freq;
+		}
+		
+		public void setFreq(int freq) {
+			this.freq = freq;
 		}
 		
 		public void setScore(float score) {
