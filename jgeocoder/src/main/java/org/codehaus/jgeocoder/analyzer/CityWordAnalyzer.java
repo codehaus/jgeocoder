@@ -1,7 +1,7 @@
 package org.codehaus.jgeocoder.analyzer;
 
 
-import static org.codehaus.jgeocoder.index.FieldNames.LENGTH;
+import static org.codehaus.jgeocoder.index.FieldNames.*;
 import static org.codehaus.jgeocoder.index.FieldNames.WORD;
 
 import java.io.IOException;
@@ -76,7 +76,7 @@ public class CityWordAnalyzer implements SearchTermAnalyzer{
 					
 					float score = EditDistanceUtils.getNormalizedSimilarity(word, token);
 					if(score>=DISTANCE_THRESHOLD){
-						TaggedField taggedField = new TaggedField(score, Tag.CITY, word, 1);
+						TaggedField taggedField = new TaggedField(score, Tag.CITY, doc.get(ZIPS), 1);
 						st.addTaggedField(taggedField);
 					}
 				}
