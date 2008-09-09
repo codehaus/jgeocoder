@@ -16,7 +16,7 @@ new InputStreamReader(Thread.currentThread().getContextClassLoader().getResource
 }
 
 
-def ps = new PrintStream(new FileOutputStream('street_dict.txt', true))
+def ps = new PrintStream(new FileOutputStream('street_all.txt', true))
 
 new File('/home/liangj01/Desktop/tiger').eachFileRecurse{
   if(it.name ==~ /TGR.+\.ZIP/){
@@ -43,10 +43,11 @@ void process(def filename, def zip, def entry, def FIPS_STATE_MAP, def FIPS_COUN
 	    if(it.name == tableName) table = it
 	}
 
-	def all = new HashSet()
 	def code = filename.substring(3,8)
 	reader.eachLine{line ->
 	    if(StringUtils.isBlank(line)) return
+	    
+	    
 	    def values = [:]
 	    table.columns.each{ c ->
 		    def val = line[c.range].trim()
@@ -64,19 +65,17 @@ void process(def filename, def zip, def entry, def FIPS_STATE_MAP, def FIPS_COUN
 		if(StringUtils.isEmpty(zipcode)){
 			zipcode = values['ZIPR']
 	    }	    
-	    String street = values['FENAME']
-	    def streetTokens = street.split(/\s+/)
-	    def word, prev, post
-	    for(int i =0; i< streetTokens.length; i++){
-	    	word = streetTokens[i]
-	    	prev = i>0? streetTokens[i-1] : ''
-	        post = i<(streetTokens.length-1)? streetTokens[i+1] : values['FETYPE']
-	        if(StringUtils.isBlank(word) || word.length() < 3) continue
-	        all << "${[prev, word, post].join('|')}|$county|$state|$zipcode"
-	    }
-	}
-	all.each{
-		ps.println it
+	    
+		String street = values['FENAME']
+	    if(street.length()==0 || zipcode.length()==0){return;}
+		
+		String type = values['FETYPE']
+		String dirp = values['FEDIRP']
+		String dirs = values['FEDIRS']
+		String tlid = values['TLID']
+		
+		ps.println "$tlid|$dirp|$street|$dirs|$county|$state|$zip"
+	    
 	}
 	
 	
