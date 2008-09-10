@@ -15,6 +15,7 @@ public class FieldNames{
 	public static final String TOADDR = "toaddr";
 	public static final String FEDIRP = "fedirp";
 	public static final String STREET = "street";
+	public static final String FULLNAME = "fullname";
 	
 	public static final String FEDIRS = "fedirs";
 	public static final String FETYPE = "fetype";
