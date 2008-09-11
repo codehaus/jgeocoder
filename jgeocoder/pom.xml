@@ -101,6 +101,11 @@
   </build>  
   <dependencies>
 <dependency>
+    <groupId>org.sarovar</groupId>
+    <artifactId>javadbf</artifactId>
+    <version>0.4</version>
+</dependency>     
+<dependency>
     <groupId>com.google.code.guice</groupId>
     <artifactId>guice</artifactId>
     <version>1.0</version>
@@ -147,6 +152,11 @@
       <artifactId>commons-logging</artifactId>
       <version>1.0.4</version>
     </dependency>    
+	<dependency>
+	    <groupId>berkeleydb</groupId>
+	    <artifactId>je</artifactId>
+	    <version>3.2.76</version>
+	</dependency>  
   </dependencies>
     <developers>
   	<developer>
