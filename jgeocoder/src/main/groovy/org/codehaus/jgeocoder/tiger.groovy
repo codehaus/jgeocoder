@@ -70,8 +70,10 @@ void process(def filename, def zip, def entry, def FIPS_STATE_MAP, def FIPS_COUN
 			zipcode = values['ZIPR']
 	    }	    
 	    String street = values['FENAME']
+	    if(StringUtils.isNotEmpty(zipcode) && StringUtils.isNotEmpty(street)){
+	    	ps.println "${[tlid, fraddl, fraddr, toaddl, toaddr, fedirp, street, fedirs, fetype, zipcode, frlat, tolat, frlong, tolong].join('|')}"
+	    }
 	    
-	    ps.println "${[tlid, fraddl, fraddr, toaddl, toaddr, fedirp, street, fedirs, fetype, zipcode, frlat, tolat, frlong, tolong].join('|')}"
 	}
 	
 	

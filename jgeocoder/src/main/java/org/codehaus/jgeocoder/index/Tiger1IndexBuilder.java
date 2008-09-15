@@ -5,7 +5,6 @@ import static org.codehaus.jgeocoder.ObjectUtils.nvl;
 import static org.codehaus.jgeocoder.index.FieldNames.FEDIRP;
 import static org.codehaus.jgeocoder.index.FieldNames.FEDIRS;
 import static org.codehaus.jgeocoder.index.FieldNames.FULLNAME;
-import static org.codehaus.jgeocoder.index.FieldNames.LENGTH;
 import static org.codehaus.jgeocoder.index.FieldNames.NGRAMS;
 import static org.codehaus.jgeocoder.index.FieldNames.TLID;
 import static org.codehaus.jgeocoder.index.FieldNames.ZIPCODE;
@@ -27,6 +26,8 @@ import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.index.IndexWriter;
 import org.codehaus.jgeocoder.DataUtils;
 import org.codehaus.jgeocoder.NGramUtils;
+
+import com.sun.corba.se.impl.ior.WireObjectKeyTemplate;
 /**
  * 
  * 
@@ -35,7 +36,7 @@ import org.codehaus.jgeocoder.NGramUtils;
  */
 class Tiger1IndexBuilder{
 	
-    private static class Street{
+    public static class Street{
     	String street; String type; String county; String city; String state;
 
 		
@@ -62,6 +63,7 @@ class Tiger1IndexBuilder{
     
 	public static void main(String[] args) throws Exception{
 		IndexWriter w = null;
+		Map<String, IndexWriter> writers = new HashMap<String, IndexWriter>();
 		BufferedReader r = null;
 		BufferedReader r2 = null;
 //		if(true) throw new RuntimeException("dont run");
@@ -78,9 +80,17 @@ class Tiger1IndexBuilder{
 			}
 			
 			
-			w = new IndexWriter("/usr/local/jgeocoder/index/tiger", new KeywordAnalyzer() );
 			
-		    r = new BufferedReader(new FileReader(Thread.currentThread().getContextClassLoader().getResource("org/codehaus/jgeocoder/index/s.txt").getFile()));
+			for(Map.Entry<String, String> e : DataUtils.getSTATE_MAP().entrySet()){
+				writers.put(e.getKey(), 
+						new IndexWriter("/usr/local/jgeocoder/index/states/"+e.getKey(), 
+								new KeywordAnalyzer()));
+			}
+			
+			w = new IndexWriter("/usr/local/jgeocoder/index/full", new KeywordAnalyzer());
+			
+			
+		    r = new BufferedReader(new FileReader("/home/liangj01/Desktop/street_all.txt"));
 			line = null;
 			count = 0;
 			while((line = r.readLine()) != null){
@@ -109,43 +119,29 @@ class Tiger1IndexBuilder{
 		    	street = expandLocalityAbbrv(street, true);
 		    	
 		    	String city = zip2City.get(zipcode);
+		    	String stateabbrv = state;
 		    	state = DataUtils.expandState(state);
 		    	
-		    	
-		    	ret.add(new Street(street, type, county, city, state).toString());
-		    	ret.add(new Street(street, null,county, city, state).toString());
-		    	ret.add(new Street(street, type, null, city, state).toString());
-		    	ret.add(new Street(street, null,null, city, state).toString());
-		    	ret.add(new Street(street, type, county, null, state).toString());
-		    	ret.add(new Street(street, null, county, null, state).toString());
 		    	ret.add(new Street(street, type, county, city, null).toString());
-		    	ret.add(new Street(street, null, county, city, null).toString());
-		    	ret.add(new Street(street, type, county, null, null).toString());
-		    	ret.add(new Street(street, null, county, null, null).toString());
-		    	ret.add(new Street(street, type, null, city, null).toString());
-		    	ret.add(new Street(street, null, null, city, null).toString());
-		    	ret.add(new Street(street, type, null, null, state).toString());
-		    	ret.add(new Street(street, null, null, null, state).toString());
 		    	
 		    	for(String s : ret){
 					Document doc = new Document();
-					doc.add(new Field(TLID, tlid, Store.YES, Index.NO));
-					if(fedirp != null){
-						doc.add(new Field(FEDIRP, fedirp, Store.YES, Index.NO));
-					}
-					if(fedirs != null){
-						doc.add(new Field(FEDIRS, fedirs, Store.YES, Index.NO));
-					}
+//					doc.add(new Field(TLID, tlid, Store.YES, Index.NO));
+//					if(fedirp != null){
+//						doc.add(new Field(FEDIRP, fedirp, Store.YES, Index.NO));
+//					}
+//					if(fedirs != null){
+//						doc.add(new Field(FEDIRS, fedirs, Store.YES, Index.NO));
+//					}
 					
 					doc.add(new Field(ZIPCODE, zipcode, Store.YES, Index.UN_TOKENIZED));
-					doc.add(new Field(FULLNAME, s, Store.YES, Index.NO));
-					doc.add(new Field(LENGTH, StringUtils.leftPad(String.valueOf(s.length()), 2, '0'), Store.NO, Index.UN_TOKENIZED));
+					doc.add(new Field(FULLNAME, String.valueOf(count), Store.YES, Index.NO));
 					String token = " "+s+" ";
-					for(String ngram : NGramUtils.nGramTokenize(token, 2, 3)){
+					for(String ngram : NGramUtils.nGramTokenize(token, 2, 2)){
 						String name = NGRAMS[ngram.length()];
 						doc.add(new Field(name, ngram, Store.NO, Index.UN_TOKENIZED));
 					}
-					w.addDocument(doc);		    		
+					writers.get(stateabbrv).addDocument(doc);		    		
 		    	}
 		    	
 
@@ -154,7 +150,9 @@ class Tiger1IndexBuilder{
 		} finally{
 			IOUtils.closeQuietly(r);
 			IOUtils.closeQuietly(r2);
-			w.close();
+			for(Map.Entry<String, IndexWriter> e : writers.entrySet()){
+				e.getValue().close();
+			}
 		}
 		
 	}

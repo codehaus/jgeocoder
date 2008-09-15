@@ -41,7 +41,9 @@ public class DataUtils{
         }
         return StringUtils.join(toks, ' ');
     }
-    
+    public static Map<String, String> getSTATE_MAP() {
+		return STATE_MAP;
+	}
     
     public static String expandState(String stateAbbrv){
     	return STATE_MAP.get(stateAbbrv);

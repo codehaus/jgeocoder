@@ -16,7 +16,7 @@ new InputStreamReader(Thread.currentThread().getContextClassLoader().getResource
 }
 
 
-def ps = new PrintStream(new FileOutputStream('street_all.txt', true))
+def ps = new PrintStream(new FileOutputStream('street_all.txt'))
 
 new File('/home/liangj01/Desktop/tiger').eachFileRecurse{
   if(it.name ==~ /TGR.+\.ZIP/){
@@ -44,6 +44,7 @@ void process(def filename, def zip, def entry, def FIPS_STATE_MAP, def FIPS_COUN
 	}
 
 	def code = filename.substring(3,8)
+	def line2tlid = [:]
 	reader.eachLine{line ->
 	    if(StringUtils.isBlank(line)) return
 	    
@@ -74,9 +75,16 @@ void process(def filename, def zip, def entry, def FIPS_STATE_MAP, def FIPS_COUN
 		String dirs = values['FEDIRS']
 		String tlid = values['TLID']
 		
-		ps.println "$tlid|$dirp|$street|$dirs|$county|$state|$zip"
-	    
+		String l = "$dirp|$street|$type|$dirs|$county|$state|$zipcode"
+		if(line2tlid[l]==null){
+			line2tlid[l]=tlid
+		}else{
+			line2tlid[l]=line2tlid[l]+','+tlid
+		}
+		
 	}
-	
+	line2tlid.each{k, v ->
+		ps.println "$k|$v"
+	}
 	
 }

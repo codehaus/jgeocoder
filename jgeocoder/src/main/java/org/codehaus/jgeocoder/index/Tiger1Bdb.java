@@ -6,13 +6,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.codehaus.jgeocoder.DataUtils;
 import org.codehaus.jgeocoder.index.Tiger1IndexBuilder.Street;
 
@@ -20,59 +19,7 @@ import com.sleepycat.je.DatabaseException;
 import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.persist.EntityStore;
-import com.sleepycat.persist.PrimaryIndex;
 import com.sleepycat.persist.StoreConfig;
-import com.sleepycat.persist.model.Entity;
-import com.sleepycat.persist.model.PrimaryKey;
-
-@Entity
-class Tiger1{
-  @PrimaryKey
-  private String id;
-  private String value;
-  public String getId() {
-	return id;
-  }
-  public String getValue() {
-	return value;
-  }
-  public void setId(String id) {
-	this.id = id;
-  }
-  public void setValue(String value) {
-	this.value = value;
-  }
-  
-  @Override
-  public String toString() {
-    return ToStringBuilder.reflectionToString(this);
-  }
-  @Override
-  public int hashCode() {
-    return HashCodeBuilder.reflectionHashCode(this);
-  }
-  @Override
-  public boolean equals(Object obj) {
-    return EqualsBuilder.reflectionEquals(this, obj);
-  }
-}
-
-class Tiger1DAO{
-	  
-	  private PrimaryIndex<String, Tiger1> tiger1ById;
-	  
-	  public Tiger1DAO(EntityStore store) throws DatabaseException{
-		  tiger1ById = store.getPrimaryIndex(String.class, Tiger1.class);
-	  }
-	  
-	  public Tiger1 getById(String id) throws DatabaseException{
-		  return tiger1ById.get(id);
-	  }
-	  
-	  public PrimaryIndex<String, Tiger1> getTiger1ById() {
-		return tiger1ById;
-	}
-}
 
 public class Tiger1Bdb{
 	
@@ -82,7 +29,7 @@ public class Tiger1Bdb{
 		Tiger1DAO dao = new Tiger1DAO(db.getStore());
 		BufferedReader r = null;
 		BufferedReader r2 = null;
-//		if(true) throw new RuntimeException("dont run");
+		if(true) throw new RuntimeException("dont run");
 		try {
 			
 			Map<String, String> zip2City = new HashMap<String, String>();
@@ -97,7 +44,8 @@ public class Tiger1Bdb{
 			
 			
 			
-		    r = new BufferedReader(new FileReader(Thread.currentThread().getContextClassLoader().getResource("org/codehaus/jgeocoder/index/s.txt").getFile()));
+			
+		    r = new BufferedReader(new FileReader("/home/liangj01/Desktop/street_all.txt"));
 			line = null;
 			count = 0;
 			while((line = r.readLine()) != null){
@@ -117,9 +65,9 @@ public class Tiger1Bdb{
 				String county = StringUtils.trimToNull(items[i++]);
 				String state = StringUtils.trimToNull(items[i++]);
 				String zipcode = StringUtils.trimToNull(items[i++]);
-//				String tlid = items[i++];
-//		
-//				Set<String> ret = new HashSet<String>();
+				String tlid = items[i++];
+		
+				Set<String> ret = new HashSet<String>();
 
 		    	String type = expandLocalityAbbrv(fetype, false);
 		    	
